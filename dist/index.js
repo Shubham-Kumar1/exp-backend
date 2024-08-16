@@ -3,12 +3,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const app = (0, express_1.default)();
-const PORT = 4401;
-app.get('/', (req, res) => {
-    res.send('Hi there');
+const dotenv_1 = __importDefault(require("dotenv"));
+const index_1 = require("./db/index");
+const app_1 = __importDefault(require("./app"));
+dotenv_1.default.config({
+    path: './.env'
 });
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+const PORT = process.env.PORT;
+(0, index_1.connectDB)()
+    .then(() => {
+    app_1.default.listen(PORT, () => {
+        console.log(`Server is running at http://localhost:${PORT}`);
+    });
+})
+    .catch((err) => {
+    console.log('Failed to connect to the database:', err);
 });
