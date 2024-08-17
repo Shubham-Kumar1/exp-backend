@@ -10,6 +10,7 @@ dotenv.config({
   path: './.env',
 });
 
+// create Register function inside try catch block with validation
 const Register = async (req: Request, res: Response) => {
   // Validate request body with Zod
   const validationResult = registerSchema.safeParse(req.body);
@@ -21,27 +22,32 @@ const Register = async (req: Request, res: Response) => {
   const { email, password } = validationResult.data;
 
   // Check if user exists
-  const existingUser = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { email },
   });
 
-  if (existingUser) {
+  if (user) {
     return res.status(400).json({ message: 'User already exists' });
   }
 
   // Hash password
-  const hashedPassword = await bcrypt.hash(password, 12);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   // Create user
-  const user = await prisma.user.create({
+  const newUser = await prisma.user.create({
     data: {
       email,
       password: hashedPassword,
     },
   });
 
-  return res.status(201).json({ message: 'User created' });
-}
+  // Create token without password
+  const token = jwt.sign({ email: newUser.email, id: newUser.id }, process.env.JWT_SECRET!, {
+    expiresIn: '1h',
+  });
+
+  return res.status(201).json({ token });
+};
 
 const Login = async (req: Request, res: Response) => {
   // Validate request body with Zod
@@ -76,16 +82,18 @@ const Login = async (req: Request, res: Response) => {
   return res.status(200).json({ token });
 };
 
+const Logout = async (req: Request, res: Response) => {
+  try {
+    // Clear the token from cookies (if using cookies for token storage)
+    res.clearCookie('token');  // Adjust the cookie name if needed
 
-
-
-
-const Logout = (req: Request, res: Response) => {
-  // To logout, typically we clear the token on the client-side.
-  // On the server, you could implement token invalidation by blacklisting the token.
-
-  res.status(200).json({ message: 'Logout successful' });
+    return res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    console.error('Error logging out:', error);
+    return res.status(500).json({ error: 'Failed to log out' });
+  }
 };
+
 
 // Export Register function
 export { Register, Login, Logout };
