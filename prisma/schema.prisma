@@ -8,14 +8,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  posts     Post[]   // Relation to posts created by the user
-  comments  Comment[] // Relation to comments made by the user
+  id                String   @id @default(cuid())
+  email             String   @unique
+  name              String?
+  password          String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  posts             Post[]   // Relation to posts created by the user
+  comments          Comment[] // Relation to comments made by the user
+  otp               Int?
+  otpExpirationTime DateTime?
 }
 
 model Post {

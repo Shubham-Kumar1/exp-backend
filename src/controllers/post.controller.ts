@@ -20,9 +20,7 @@ const getPosts = async (req: Request, res: Response) => {
     }
 };
 
-
-
-// Get a single post by ID
+// Get a single post
 const getPost = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -46,7 +44,6 @@ const getPost = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to fetch post' });
     }
 };
-
 
 // Create a new post
 const createPost = async (req: AuthRequest, res: Response) => {
@@ -72,6 +69,7 @@ const createPost = async (req: AuthRequest, res: Response) => {
     }
 };
 
+// Update an existing post
 const updatePost = async (req: AuthRequest, res: Response) => {
     try {
         const { id } = req.params;
@@ -101,6 +99,7 @@ const updatePost = async (req: AuthRequest, res: Response) => {
     }
 };
 
+// Delete a post
 const deletePost = async (req: AuthRequest, res: Response) => {
     try {
         const { id } = req.params;
