@@ -49,6 +49,10 @@ const Register = async (req: Request, res: Response) => {
   return res.status(201).json({ token });
 };
 
+const RegisterViaGoogle = async (req: Request, res: Response) => {
+  // Implement Google OAuth2.0 registration here
+}
+
 const Login = async (req: Request, res: Response) => {
   // Validate request body with Zod
   const validationResult = loginSchema.safeParse(req.body);
@@ -96,4 +100,4 @@ const Logout = async (req: Request, res: Response) => {
 
 
 // Export Register function
-export { Register, Login, Logout };
+export { Register, Login, Logout, RegisterViaGoogle };
